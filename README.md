@@ -11,8 +11,8 @@
 ## Установка
 
 ```bash
-git clone https://github.com/terminal-translate/terminal-translate.git
-cd translate-cli
+git clone https://github.com/mrKiroks/terminal-translate.git
+cd terminal-translate
 sudo make install
 ```
 
