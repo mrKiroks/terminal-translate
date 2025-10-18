@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# translate — быстрый перевод ru↔en через Google
+# usage:  translate "Привет, как дела?"   →  Hello, how are you?
+#         translate "Hello, how are you?"  →  Привет, как дела?
+
+set -euo pipefail
+
+query="$*"
+[[ -z $query ]] && { echo "Usage: translate <text>" >&2; exit 1; }
+
+# кодируем текст для URL
+encoded=$(printf '%s' "$query" | jq -sRr @uri)
+
+# определяем язык входного текста (русский/английский)
+detect_url="https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=ld&q=$encoded"
+lang=$(curl -sS --max-time 5 "$detect_url" | jq -r '.[2]')
+
+case "$lang" in
+    ru) tl="en" ;;   # русский → английский
+    en) tl="ru" ;;   # английский → русский
+    *)  echo "Unsupported language detected: $lang" >&2; exit 1 ;;
+esac
+
+# собственно перевод
+trans_url="https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=$tl&dt=t&q=$encoded"
+reply=$(curl -sS --max-time 5 "$trans_url" |
+        jq -r '.[0][].[0] // empty' |
+        tr -d '\n')
+
+echo "$reply"
