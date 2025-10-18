@@ -1,3 +1,5 @@
+### LINUX
+
 ![License](https://img.shields.io/github/license/mrKiroks/terminal-translate)
 ![Code size](https://img.shields.io/github/languages/code-size/mrKiroks/terminal-translate)
 
